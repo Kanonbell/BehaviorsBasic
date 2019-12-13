@@ -31,6 +31,7 @@ import org.terasology.logic.console.commandSystem.annotations.Command;
 import org.terasology.registry.In;
 import org.terasology.wildAnimals.component.WildAnimalComponent;
 
+
 @RegisterSystem(RegisterMode.AUTHORITY)
 public class InitialBehaviorSystem extends BaseComponentSystem {
 
@@ -52,21 +53,21 @@ public class InitialBehaviorSystem extends BaseComponentSystem {
      *
      * @return success message
      */
-    @Command(shortDescription = "Assigns the 'critter' behavior to all wild animals.")
+    @Command(shortDescription = "Assigns the 'regularDeer' behavior to all yellow deers.")
     public String assignBehavior() {
 
-        String behavior = "Behaviors:critter";
+        String behavior = "regularDeer";
         for (EntityRef entityRef : entityManager.getEntitiesWith(WildAnimalComponent.class)) {
+                if(entityRef.getParentPrefab().getName().equals("WildAnimalsMadness:yellowDeer"))
+                logger.info("Assigning behavior to a yellow deer based on the following prefab: " + entityRef.getParentPrefab().getName());
 
-            logger.info("Assigning behavior to a wild animal based on the following prefab: " + entityRef.getParentPrefab().getName());
+                assignBehaviorToEntity(entityRef, behavior);
 
-            assignBehaviorToEntity(entityRef, behavior);
-
-            logger.info("Behavior assigned:" + behavior);
+                logger.info("Behavior assigned:" + behavior);
 
 
         }
-        return "All wild animals should have the same behavior now.";
+        return "All yellow deers should have the same behavior now.";
     }
 
 
