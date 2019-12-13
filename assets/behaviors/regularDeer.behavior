@@ -7,7 +7,7 @@
                 child:{
                     sequence:[
                         check_flee_stop,
-                        {lookup: {tree: "Behaviors:flee"}}
+                        {lookup: {tree: "BehaviorsBasic:fastFlee"}}
                     ]
                 }
             }
@@ -50,7 +50,7 @@
         },
 
         {
-            lookup: {tree:"Behaviors:stray"}
+            lookup: {tree:"BehaviorsBasic:fastStray"}
         }
     ]
 }

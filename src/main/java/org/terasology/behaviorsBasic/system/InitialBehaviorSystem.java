@@ -24,10 +24,12 @@ import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.logic.behavior.BehaviorComponent;
+import org.terasology.logic.behavior.GroupTagComponent;
 import org.terasology.logic.behavior.Interpreter;
 import org.terasology.logic.behavior.asset.BehaviorTree;
 import org.terasology.logic.behavior.core.Actor;
 import org.terasology.logic.console.commandSystem.annotations.Command;
+import org.terasology.logic.console.commandSystem.annotations.CommandParam;
 import org.terasology.registry.In;
 import org.terasology.wildAnimals.component.WildAnimalComponent;
 
@@ -58,6 +60,7 @@ public class InitialBehaviorSystem extends BaseComponentSystem {
 
         String behavior = "regularDeer";
         for (EntityRef entityRef : entityManager.getEntitiesWith(WildAnimalComponent.class)) {
+
                 if(entityRef.getParentPrefab().getName().equals("WildAnimalsMadness:yellowDeer"))
                 logger.info("Assigning behavior to a yellow deer based on the following prefab: " + entityRef.getParentPrefab().getName());
 
@@ -68,6 +71,30 @@ public class InitialBehaviorSystem extends BaseComponentSystem {
 
         }
         return "All yellow deers should have the same behavior now.";
+    }
+
+
+    @Command(shortDescription = "Assigns the 'regularDeer' behavior to all animals in the same given group")
+    public String assignGroupBehavior(@CommandParam("groupLabel") String groupLabel)
+    {
+        String behavior = "regularDeer";
+
+        for(EntityRef entityRef : entityManager.getEntitiesWith(GroupTagComponent.class)){
+
+            GroupTagComponent gtc = entityRef.getComponent(GroupTagComponent.class);
+
+
+            if(!gtc.groups.contains(groupLabel)) continue;
+
+            BehaviorComponent comp = entityRef.getComponent(BehaviorComponent.class);
+
+           gtc.backupBT = comp.tree;
+           gtc.backupRunningState = comp.interpreter;
+
+           assignBehaviorToEntity(entityRef, behavior);
+        }
+
+        return "All members of the group " + groupLabel + " now have the same behavior!";
     }
 
 
